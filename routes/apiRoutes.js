@@ -3,8 +3,11 @@
 // We are linking our routes to a series of "data" sources.
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 // ===============================================================================
-var router = require('express').Router();
- var db = require('../db/db.json');
+const router = require('express').Router();
+const db = require('../db/db.json');
+const { v4: uuidv4 } = require('uuid');
+const fs = require("fs");
+const { json } = require('express');
 // var waitListData = require('../data/waitinglistData');
 //localhost:3001/api
 /* 
@@ -30,28 +33,39 @@ router
     // req.body is available since we're using the body parsing middleware
  
       db.push(req.body);
-      req.body.id=0; //uuid()
-      //update the dbjson file 
+      req.body.id = uuidv4();
+      const json = JSON.parse(data);
       //fs.writefile() stringify =>db
-      res.json(db);
+      fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
+        if (err) throw err;
+        console.log('This File is ready to go!');
+      })
+      res.json(db)
   
   });
 
 router.delete('/notes/:id', (_req, res) => {
+  fs.readFile(path.join(db), (err, data) => {
+    if (err) throw err;
+    const json = JSON.parse(data);
+    const result = json.filter(note => {
+      if (note.id === req.params.id) {
+        const index = json.indexof(note);
+        json.splice(index, 1)
+        fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
+          if (err) throw err;
+          console.log('This Files Has Been Removed');
+        })
+      }
+    })
+  }
   //req.params.id
   //res.json(waitListData);
-});
+);
+res.end();
 
 // ---------------------------------------------------------------------------
 // I added this below code so you could clear out the table while working with the functionality.
 // Don"t worry about it!
-
-router.post('/clear', function (req, res) {
-  // Empty out the arrays of data
-  // tableData.length = 0;
-  // waitListData.length = 0;
-
-  // res.json({ ok: true });
-});
 
 module.exports = router;
