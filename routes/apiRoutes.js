@@ -12,6 +12,7 @@ const { json } = require('express');
 //localhost:3001/api
 /* 
 
+
 * The following API routes should be created:
 
 
@@ -20,6 +21,8 @@ const { json } = require('express');
   */
 
 //  * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
+
+console.log(uuidv4())
 router
   .route('/notes')
   .get((_req, res) => {
@@ -33,10 +36,11 @@ router
     // req.body is available since we're using the body parsing middleware
  
       db.push(req.body);
+
       req.body.id = uuidv4();
-      const json = JSON.parse(data);
+      //const json = JSON.parse(db);
       //fs.writefile() stringify =>db
-      fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
+      fs.writeFile("./db/db.json", JSON.stringify(db), (err) => {
         if (err) throw err;
         console.log('This File is ready to go!');
       })
@@ -45,24 +49,25 @@ router
   });
 
 router.delete('/notes/:id', (_req, res) => {
-  fs.readFile(path.join(db), (err, data) => {
-    if (err) throw err;
-    const json = JSON.parse(data);
-    const result = json.filter(note => {
-      if (note.id === req.params.id) {
-        const index = json.indexof(note);
-        json.splice(index, 1)
-        fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
-          if (err) throw err;
-          console.log('This Files Has Been Removed');
-        })
-      }
-    })
-  }
+  // fs.readFile(path.join(db), (err, data) => {
+  //   if (err) throw err;
+  //   const json = JSON.parse(data);
+  //   const result = json.filter(note => {
+  //     if (note.id === req.params.id) {
+  //       const index = json.indexof(note);
+  //       json.splice(index, 1)
+  //       fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
+  //         if (err) throw err;
+  //         console.log('This Files Has Been Removed');
+  //       })
+  //     }
+  //   })
+  // }
   //req.params.id
   //res.json(waitListData);
-);
-res.end();
+//)
+});
+//res.end();
 
 // ---------------------------------------------------------------------------
 // I added this below code so you could clear out the table while working with the functionality.
