@@ -49,23 +49,19 @@ router
   });
 
 router.delete('/notes/:id', (_req, res) => {
-  // fs.readFile(path.join(db), (err, data) => {
-  //   if (err) throw err;
-  //   const json = JSON.parse(data);
-  //   const result = json.filter(note => {
-  //     if (note.id === req.params.id) {
-  //       const index = json.indexof(note);
-  //       json.splice(index, 1)
-  //       fs.writeFile(path.join(db), JSON.stringify(json), (err) => {
-  //         if (err) throw err;
-  //         console.log('This Files Has Been Removed');
-  //       })
-  //     }
-  //   })
-  // }
-  //req.params.id
-  //res.json(waitListData);
-//)
+
+  const deleteId = req.params.id;
+  fs.readFile(path.join(db), (err, data) => {
+    if (err) throw err;
+     const noteData = JSON.parse(data);
+     const newNoteData = noteData.filter((note) => note.id != deleteId);
+
+         fs.writeFile(path.join(db), JSON.stringify(newNoteData), (err) => {
+           if (err) throw err;
+           console.log('This Files Has Been Removed');
+         })
+       }
+     )
 });
 //res.end();
 
